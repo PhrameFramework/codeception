@@ -19,12 +19,12 @@ class Bootstrap
     /**
      * Loads and initializes package
      * 
-     * @param   Core\Application  $application  Application object
+     * @param   Core\Application  $app  Application object
      * @return  void
      */
-    public static function init($application = null)
+    public static function init($app = null)
     {
-        $application = $application ?: Core\Application::instance();
+        $app = $app ?: Core\Application::instance();
 
         include_once 'vendor/autoload.php';
     }

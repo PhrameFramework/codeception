@@ -12,6 +12,9 @@
 
 namespace Phrame\Codeception;
 
+/**
+ * CodeGuy class
+ */
 class CodeGuy extends \Codeception\AbstractGuy
 {
     

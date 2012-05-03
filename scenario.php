@@ -12,6 +12,9 @@
 
 namespace Phrame\Codeception;
 
+/**
+ * Scenario class
+ */
 class Scenario extends \Codeception\Scenario
 {
     

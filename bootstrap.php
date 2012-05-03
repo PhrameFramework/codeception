@@ -14,6 +14,9 @@ namespace Phrame\Codeception;
 
 use Phrame\Core;
 
+/**
+ * Bootstrap class
+ */
 class Bootstrap
 {
     /**

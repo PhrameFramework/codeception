@@ -12,6 +12,9 @@
 
 namespace Phrame\Codeception;
 
+/**
+ * TestCase class
+ */
 abstract class TestCase extends \Codeception\TestCase
 {
     

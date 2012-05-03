@@ -143,7 +143,8 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
     public function submitForm($selector, $params)
     {
         $form = $this->crawler->filter($selector)->first();
-        if (empty($form)) return \PHPUnit_Framework_Assert::fail(', form does not exists');
+
+        if (!count($form)) return \PHPUnit_Framework_Assert::fail(', form does not exists');
 
         $url = '';
         $fields = $this->crawler->filter($selector . ' input');
@@ -169,7 +170,7 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
 
         $url .= '&' . http_build_query($params);
         parse_str($url, $params);
-
+   
         $method = $form->attr('method') ? $form->attr('method') : 'GET';
 
         $this->debugSection('Uri', $this->getFormUrl($form));
@@ -194,7 +195,10 @@ abstract class Framework extends \Codeception\Module implements FrameworkInterfa
         $action = $this->getFormUrl($form);
 
         if (!isset($this->forms[$action])) {
-            $form->children()->addHtmlContent('<input type="submit" />'); // for forms with no submits...
+            $submit = new \DOMElement('input');
+            $submit = $form->current()->appendChild($submit);
+            $submit->setAttribute('type','submit'); // for forms with no submits
+
             $form = $form->filter('input[type=submit]')->form();
             $this->forms[$action] = $form;
         }

@@ -32,6 +32,10 @@ class Cest extends \Codeception\TestCase
             $I->testMethod($this->signature);
         }
 
+        if ($spec = $this->getSpecFromMethod()) {
+            $I->wantTo($spec);
+        }
+
         if ($this->static) {
             $class = $unit->class;
             if (!is_callable(array($class, $this->testMethod))) throw new \Exception("Method {$this->specName} can't be found in tested class");
@@ -47,6 +51,11 @@ class Cest extends \Codeception\TestCase
         return $this->testClass;
     }
 
+    public function getTestMethod()
+    {
+        return $this->testMethod;
+    }
+
     public function getCoveredClass()
     {
         $class = $this->getTestClass();
@@ -59,7 +68,30 @@ class Cest extends \Codeception\TestCase
         if (!$this->getCoveredClass()) return null;
         $r = new \ReflectionClass($this->getCoveredClass());
         if ($r->hasMethod($this->testMethod)) return $this->testMethod;
+
+        // search by annotations
+        $rm = new \ReflectionMethod($this->testClass, $this->testMethod);
+        $doc = $rm->getDocComment();
+
+
+        if (preg_match('~@(covers|doc) (.*?)\*~si', $doc, $matches)) {
+            $method = trim($matches[2]);
+            if ($r->hasMethod($method)) return $method;
+            return null;
+        }
+
         return null;
+    }
+
+    public function getSpecFromMethod() {
+        if (strpos(strtolower($this->testMethod),'should') === 0) {
+            $text = substr($this->testMethod,6);
+            $text = preg_replace('/([A-Z]+)([A-Z][a-z])/', '\\1 \\2', $text);
+            $text = preg_replace('/([a-z\d])([A-Z])/', '\\1 \\2', $text);
+            $text = strtolower($text);
+            return $text;
+        }
+        return '';
     }
 
 }
